@@ -28,8 +28,8 @@ import (
 func paramCompletion(line, pLine string, params lsp.TextDocumentPositionParams) (interface{}, error) {
 	list := completionList{IsIncomplete: false, Items: []completionItem{}}
 	argType, suffix, editRange := getParamArgTypeAndEditRange(line, pLine, params.Position)
-	fileUrl, _ := url.Parse(params.TextDocument.URI)
-	for _, param := range provider.Params(fileUrl.Path, argType) {
+	fileURL, _ := url.Parse(params.TextDocument.URI)
+	for _, param := range provider.Params(fileURL.Path, argType) {
 		if !shouldAddParam(param.ArgType) {
 			continue
 		}
@@ -73,7 +73,6 @@ func getParamArgTypeAndEditRange(line, pLine string, position lsp.Position) (gau
 	bracIndex := strings.LastIndex(pLine, "<")
 	if quoteIndex > bracIndex {
 		return gauge.Static, "\"", getRange(quoteIndex, "\"")
-	} else {
-		return gauge.Dynamic, ">", getRange(bracIndex, ">")
 	}
+	return gauge.Dynamic, ">", getRange(bracIndex, ">")
 }

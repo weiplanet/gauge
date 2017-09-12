@@ -381,7 +381,7 @@ func (parser *SpecParser) initializeConverters() []func(*Token, *int, *gauge.Spe
 	commentConverter := converterFn(func(token *Token, state *int) bool {
 		return token.Kind == gauge.CommentKind
 	}, func(token *Token, spec *gauge.Specification, state *int) ParseResult {
-		comment := &gauge.Comment{token.Value, token.LineNo}
+		comment := &gauge.Comment{Value: token.Value, LineNo: token.LineNo}
 		if isInState(*state, scenarioScope) {
 			spec.LatestScenario().AddComment(comment)
 		} else {
@@ -409,11 +409,11 @@ func (parser *SpecParser) initializeConverters() []func(*Token, *int, *gauge.Spe
 			spec.AddExternalDataTable(externalTable)
 		} else if isInState(*state, specScope) && spec.DataTable.IsInitialized() {
 			value := "Multiple data table present, ignoring table"
-			spec.AddComment(&gauge.Comment{token.LineText, token.LineNo})
+			spec.AddComment(&gauge.Comment{Value: token.LineText, LineNo: token.LineNo})
 			return ParseResult{Ok: false, Warnings: []*Warning{&Warning{spec.FileName, token.LineNo, value}}}
 		} else {
 			value := "Data table not associated with spec"
-			spec.AddComment(&gauge.Comment{token.LineText, token.LineNo})
+			spec.AddComment(&gauge.Comment{Value: token.LineText, LineNo: token.LineNo})
 			return ParseResult{Ok: false, Warnings: []*Warning{&Warning{spec.FileName, token.LineNo, value}}}
 		}
 		retainStates(state, specScope)
@@ -436,7 +436,7 @@ func (parser *SpecParser) initializeConverters() []func(*Token, *int, *gauge.Spe
 				latestTeardown := spec.LatestTeardown()
 				addInlineTableHeader(latestTeardown, token)
 			} else {
-				spec.AddComment(&gauge.Comment{token.LineText, token.LineNo})
+				spec.AddComment(&gauge.Comment{Value: token.LineText, LineNo: token.LineNo})
 			}
 		} else if !isInState(*state, scenarioScope) {
 			if !spec.DataTable.Table.IsInitialized() {
@@ -446,12 +446,12 @@ func (parser *SpecParser) initializeConverters() []func(*Token, *int, *gauge.Spe
 				spec.AddDataTable(dataTable)
 			} else {
 				value := "Multiple data table present, ignoring table"
-				spec.AddComment(&gauge.Comment{token.LineText, token.LineNo})
+				spec.AddComment(&gauge.Comment{Value: token.LineText, LineNo: token.LineNo})
 				return ParseResult{Ok: false, Warnings: []*Warning{&Warning{spec.FileName, token.LineNo, value}}}
 			}
 		} else {
 			value := "Table not associated with a step, ignoring table"
-			spec.LatestScenario().AddComment(&gauge.Comment{token.LineText, token.LineNo})
+			spec.LatestScenario().AddComment(&gauge.Comment{Value: token.LineText, LineNo: token.LineNo})
 			return ParseResult{Ok: false, Warnings: []*Warning{&Warning{spec.FileName, token.LineNo, value}}}
 		}
 		retainStates(state, specScope, scenarioScope, stepScope, contextScope, tearDownScope)
@@ -466,9 +466,9 @@ func (parser *SpecParser) initializeConverters() []func(*Token, *int, *gauge.Spe
 		//When table is to be treated as a comment
 		if !isInState(*state, tableScope) {
 			if isInState(*state, scenarioScope) {
-				spec.LatestScenario().AddComment(&gauge.Comment{token.LineText, token.LineNo})
+				spec.LatestScenario().AddComment(&gauge.Comment{Value: token.LineText, LineNo: token.LineNo})
 			} else {
-				spec.AddComment(&gauge.Comment{token.LineText, token.LineNo})
+				spec.AddComment(&gauge.Comment{Value: token.LineText, LineNo: token.LineNo})
 			}
 		} else if areUnderlined(token.Args) && !isInState(*state, tableSeparatorScope) {
 			retainStates(state, specScope, scenarioScope, stepScope, contextScope, tearDownScope, tableScope)
@@ -487,7 +487,7 @@ func (parser *SpecParser) initializeConverters() []func(*Token, *int, *gauge.Spe
 				latestTeardown := spec.LatestTeardown()
 				result = addInlineTableRow(latestTeardown, token, new(gauge.ArgLookup).FromDataTable(&spec.DataTable.Table), spec.FileName)
 			} else {
-				spec.AddComment(&gauge.Comment{token.LineText, token.LineNo})
+				spec.AddComment(&gauge.Comment{Value: token.LineText, LineNo: token.LineNo})
 			}
 		} else {
 			//todo validate datatable rows also

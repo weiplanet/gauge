@@ -62,8 +62,8 @@ Scenario Heading
 }
 
 func (s *MySuite) TestFormatTable(c *C) {
-	cell1 := gauge.TableCell{"john", gauge.Static}
-	cell2 := gauge.TableCell{"doe", gauge.Static}
+	cell1 := gauge.TableCell{Value: "john", CellType: gauge.Static}
+	cell2 := gauge.TableCell{Value: "doe", CellType: gauge.Static}
 
 	headers := []string{"name1", "name2"}
 	cols := [][]gauge.TableCell{{cell1}, {cell2}}

@@ -188,7 +188,7 @@ func ExtractStepValueAndParams(stepText string, hasInlineTable bool) (*gauge.Ste
 	}
 	parameterizedStepValue := getParameterizeStepValue(extractedStepValue, args)
 
-	return &gauge.StepValue{args, extractedStepValue, parameterizedStepValue}, nil
+	return &gauge.StepValue{Args: args, StepValue: extractedStepValue, ParameterizedStepValue: parameterizedStepValue}, nil
 
 }
 

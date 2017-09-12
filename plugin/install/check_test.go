@@ -30,7 +30,7 @@ func (s *MySuite) TestCheckGaugeUpdateWhenThereIsAnUpdate(c *C) {
 	getLatestGaugeVersion = func(url string) (string, error) {
 		return "0.1.0", nil
 	}
-	version.CurrentGaugeVersion = &version.Version{0, 0, 1}
+	version.CurrentGaugeVersion = &version.Version{Major: 0, Minor: 0, Patch: 1}
 	updateInfo := checkGaugeUpdate()[0]
 	c.Assert(updateInfo.CompatibleVersion, Equals, "0.1.0")
 	c.Assert(updateInfo.Name, Equals, "Gauge")
@@ -40,13 +40,13 @@ func (s *MySuite) TestCheckGaugeUpdateWhenThereIsNoUpdate(c *C) {
 	getLatestGaugeVersion = func(url string) (string, error) {
 		return "0.1.0", nil
 	}
-	version.CurrentGaugeVersion = &version.Version{0, 2, 0}
+	version.CurrentGaugeVersion = &version.Version{Major: 0, Minor: 2, Patch: 0}
 	updateInfos := checkGaugeUpdate()
 	c.Assert(len(updateInfos), Equals, 0)
 }
 
 func (s *MySuite) TestCreatePluginUpdateDetailWhenThereIsAnUpdate(c *C) {
-	version.CurrentGaugeVersion = &version.Version{0, 1, 1}
+	version.CurrentGaugeVersion = &version.Version{Major: 0, Minor: 1, Patch: 1}
 	ruby := "ruby"
 	i := installDescription{Name: ruby, Versions: []versionInstallDescription{versionInstallDescription{Version: "0.1.1", GaugeVersionSupport: version.VersionSupport{Minimum: "0.1.0", Maximum: "0.1.2"}}}}
 	updateDetails := createPluginUpdateDetail("0.1.0", i)
@@ -57,7 +57,7 @@ func (s *MySuite) TestCreatePluginUpdateDetailWhenThereIsAnUpdate(c *C) {
 }
 
 func (s *MySuite) TestCreatePluginUpdateDetailWhenThereIsNoUpdate(c *C) {
-	version.CurrentGaugeVersion = &version.Version{0, 1, 1}
+	version.CurrentGaugeVersion = &version.Version{Major: 0, Minor: 1, Patch: 1}
 	ruby := "ruby"
 	i := installDescription{Name: ruby, Versions: []versionInstallDescription{versionInstallDescription{Version: "0.1.0", GaugeVersionSupport: version.VersionSupport{Minimum: "0.1.0", Maximum: "0.1.2"}}}}
 	updateDetails := createPluginUpdateDetail("0.1.0", i)
@@ -81,7 +81,7 @@ windows86_64: a70281e005d97216a2535b6def57ef38df38b767`
 }
 
 func (s *MySuite) TestCreatePluginUpdateDetailForNightly(c *C) {
-	version.CurrentGaugeVersion = &version.Version{0, 1, 1}
+	version.CurrentGaugeVersion = &version.Version{Major: 0, Minor: 1, Patch: 1}
 	ruby := "ruby"
 	i := installDescription{Name: ruby, Versions: []versionInstallDescription{versionInstallDescription{Version: "0.1.1.nightly.2050-02-01", GaugeVersionSupport: version.VersionSupport{Minimum: "0.1.0", Maximum: "0.1.2"}}}}
 	updateDetails := createPluginUpdateDetail("0.1.0", i)
